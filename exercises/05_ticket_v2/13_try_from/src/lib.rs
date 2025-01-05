@@ -8,6 +8,27 @@ enum Status {
     Done,
 }
 
+impl std::convert::TryFrom<String> for Status {
+    type Error = &'static str;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        Self::try_from(value.as_str())
+    }
+}
+
+impl std::convert::TryFrom<&str> for Status {
+    type Error = &'static str;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value.to_lowercase().as_str() {
+            "todo" => Ok(Status::ToDo),
+            "inprogress" => Ok(Status::InProgress),
+            "done" => Ok(Status::Done),
+            _ => Err("Invalid status"),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -21,7 +42,7 @@ mod tests {
         let status = Status::try_from("inproGress".to_string()).unwrap();
         assert_eq!(status, Status::InProgress);
 
-        let status = Status::try_from("Done".to_string()).unwrap();
+        let status: Status = Status::try_from("Done".to_string()).unwrap();
         assert_eq!(status, Status::Done);
     }
 

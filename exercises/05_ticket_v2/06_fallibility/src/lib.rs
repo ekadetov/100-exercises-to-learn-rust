@@ -16,25 +16,39 @@ enum Status {
 }
 
 impl Ticket {
-    pub fn new(title: String, description: String, status: Status) -> Ticket {
-        if title.is_empty() {
-            panic!("Title cannot be empty");
-        }
-        if title.len() > 50 {
-            panic!("Title cannot be longer than 50 bytes");
-        }
-        if description.is_empty() {
-            panic!("Description cannot be empty");
-        }
-        if description.len() > 500 {
-            panic!("Description cannot be longer than 500 bytes");
-        }
+    pub fn new(title: String, description: String, status: Status) -> Result<Ticket, String> {
+        Self::validate_title(&title)?;
+        Self::validate_description(&description)?;
 
-        Ticket {
+        let ticket = Ticket {
             title,
             description,
             status,
+        };
+
+        Ok(ticket)
+    }
+
+    fn validate_title(title: &String) -> Result<(), String> {
+        if title.is_empty() {
+            return Result::Err("Title cannot be empty".into());
         }
+        if title.len() > 50 {
+            return Result::Err("Title cannot be longer than 50 bytes".into());
+        }
+
+        Result::Ok(())
+    }
+
+    fn validate_description(description: &String) -> Result<(), String> {
+        if description.is_empty() {
+            return Result::Err("Description cannot be empty".into());
+        }
+        if description.len() > 500 {
+            return Result::Err("Description cannot be longer than 500 bytes".into());
+        }
+
+        Result::Ok(())
     }
 }
 
