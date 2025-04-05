@@ -8,6 +8,22 @@ pub struct TicketStore {
     counter: u64,
 }
 
+impl std::ops::Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: &TicketId) -> &Self::Output {
+        self.tickets.iter().find(|t| t.id == *id).unwrap()
+    }
+}
+
+impl std::ops::Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: TicketId) -> &Self::Output {
+        &self[&id]
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct TicketId(u64);
 
